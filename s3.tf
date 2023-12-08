@@ -4,6 +4,20 @@ resource "aws_s3_bucket" "eric_milan_dev" {
   tags = {
     Name = "ericmilan.dev"
   }
+  policy = jsonencode(
+    {
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Sid" : "PublicReadGetObject",
+          "Effect" : "Allow",
+          "Principal" : "*",
+          "Action" : "s3:GetObject",
+          "Resource" : "arn:aws:s3:::${aws_s3_bucket.eric_milan_dev.id}/*"
+        }
+      ]
+    }
+  )
 }
 
 resource "aws_s3_bucket_website_configuration" "eric_milan_dev" {
@@ -58,6 +72,20 @@ resource "aws_s3_bucket" "eric_milan_dev_prod" {
   tags = {
     Name = "ericmilan.dev"
   }
+  policy = jsonencode(
+    {
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Sid" : "PublicReadGetObject",
+          "Effect" : "Allow",
+          "Principal" : "*",
+          "Action" : "s3:GetObject",
+          "Resource" : "arn:aws:s3:::${aws_s3_bucket.eric_milan_dev_prod.id}/*"
+        }
+      ]
+    }
+  )
 }
 
 resource "aws_s3_bucket_website_configuration" "eric_milan_dev_prod" {
