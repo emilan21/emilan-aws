@@ -4,6 +4,10 @@ resource "aws_s3_bucket" "eric_milan_dev" {
   tags = {
     Name = "ericmilan.dev"
   }
+}
+
+resource "aws_s3_bucket_policy" "eric_milan_dev" {
+  bucket = aws_s3_bucket.eric_milan_dev.id
   policy = jsonencode(
     {
       "Version" : "2012-10-17",
@@ -72,6 +76,11 @@ resource "aws_s3_bucket" "eric_milan_dev_prod" {
   tags = {
     Name = "ericmilan.dev"
   }
+}
+
+resource "aws_s3_bucket_policy" "eric_milan_dev_prod" {
+  provider = aws.prod
+  bucket   = aws_s3_bucket.eric_milan_dev_prod.id
   policy = jsonencode(
     {
       "Version" : "2012-10-17",
