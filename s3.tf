@@ -101,10 +101,10 @@ resource "aws_s3_bucket_acl" "eric_milan_dev_prod" {
   acl    = "public-read"
 }
 
-output "end_point_url" {
+output "end_point_url-prod" {
   value = aws_s3_bucket_website_configuration.eric_milan_dev_prod.website_endpoint
 }
 
-output "web_site_domain" {
+output "web_site_domain-prod" {
   value = aws_s3_bucket_website_configuration.eric_milan_dev_prod.website_domain
 }
