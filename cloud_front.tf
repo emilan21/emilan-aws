@@ -1,42 +1,65 @@
+# Local
+locals {
+  # Website 1 Account
+  s3_origin_id   = "${var.s3_name}-origin"
+  s3_domain_name = "${var.s3_name}.s3-website-${var.region}.amazonaws.com"
+
+  # Prod Account
+  s3_origin_id_prod   = "${var.s3_name_prod}-origin"
+  s3_domain_name_prod = "${var.s3_name_prod}.s3-website-${var.region}.amazonaws.com"
+}
+
 # Website 1 Account
 resource "aws_cloudfront_distribution" "eric_milan_dev" {
-  enabled         = true
-  is_ipv6_enabled = true
+  enabled = true
 
   origin {
-    domain_name = aws_s3_bucket_website_configuration.eric_milan_dev.website_endpoint
-    origin_id   = aws_s3_bucket.eric_milan_dev.bucket_regional_domain_name
-
+    domain_name = local.s3_domain_name
+    origin_id   = local.s3_origin_id
     custom_origin_config {
-      http_port                = 80
-      https_port               = 443
-      origin_keepalive_timeout = 5
-      origin_protocol_policy   = "http-only"
-      origin_read_timeout      = 30
-      origin_ssl_protocols = [
-        "TLSv1.2",
-      ]
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"
+      origin_ssl_protocols   = ["TLSv1"]
     }
   }
 
-  viewer_certificate {
-    cloudfront_default_certificate = true
+  #default_root_object = "index.html"
+
+  default_cache_behavior {
+
+    target_origin_id = local.s3_origin_id
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+
+    forwarded_values {
+      query_string = true
+
+      cookies {
+        forward = "all"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
   }
 
   restrictions {
     geo_restriction {
       restriction_type = "none"
-      locations        = []
     }
   }
 
-  default_cache_behavior {
-    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
-    viewer_protocol_policy = "redirect-to-https"
-    compress               = true
-    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = aws_s3_bucket.eric_milan_dev.bucket_regional_domain_name
+  price_class = "PriceClass_200"
+
+  tags = {
+    Environment = "dev"
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
   }
 }
 
@@ -47,44 +70,62 @@ output "website1_cloudfront_url" {
 
 # Prod Account
 resource "aws_cloudfront_distribution" "eric_milan_dev_prod" {
-  provider        = aws.prod
-  enabled         = true
-  is_ipv6_enabled = true
+  provider = aws.prod
+
+  enabled = true
 
   origin {
-    domain_name = aws_s3_bucket_website_configuration.eric_milan_dev_prod.website_endpoint
-    origin_id   = aws_s3_bucket.eric_milan_dev_prod.bucket_regional_domain_name
-
+    domain_name = local.s3_domain_name_prod
+    origin_id   = local.s3_origin_id_prod
     custom_origin_config {
-      http_port                = 80
-      https_port               = 443
-      origin_keepalive_timeout = 5
-      origin_protocol_policy   = "http-only"
-      origin_read_timeout      = 30
-      origin_ssl_protocols = [
-        "TLSv1.2",
-      ]
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"
+      origin_ssl_protocols   = ["TLSv1"]
     }
   }
 
-  viewer_certificate {
-    cloudfront_default_certificate = true
+  default_cache_behavior {
+
+    target_origin_id = local.s3_origin_id_prod
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+
+    forwarded_values {
+      query_string = true
+
+      cookies {
+        forward = "all"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
   }
 
   restrictions {
     geo_restriction {
       restriction_type = "none"
-      locations        = []
     }
   }
 
-  default_cache_behavior {
-    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
-    viewer_protocol_policy = "redirect-to-https"
-    compress               = true
-    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = aws_s3_bucket.eric_milan_dev_prod.bucket_regional_domain_name
+  #default_root_object = "index.html"
+
+  aliases = ["ericmilan.dev", "www.ericmilan.dev"]
+
+
+  price_class = "PriceClass_200"
+
+  tags = {
+    Environment = "prod"
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = false
+    acm_certificate_arn            = aws_acm_certificate.eric_milan_dev_prod.arn
+    ssl_support_method             = "sni-only"
   }
 }
 
