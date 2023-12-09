@@ -4,9 +4,11 @@ variable "region" {
 }
 
 variable "s3_name" {
-  type = string
+  type    = string
+  default = "eric-milan-dev"
 }
 
 variable "s3_name_prod" {
-  type = string
+  type    = string
+  default = "eric-milan-dev-prod"
 }
