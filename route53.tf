@@ -1,6 +1,6 @@
 locals {
   MXRecordSets = {
-    "@" = {
+    "ericmilan.dev" = {
       Type = "MX",
       TTL  = 3600,
       MXRecords = [
@@ -14,7 +14,7 @@ locals {
     }
   }
   TXTRecordSets = {
-    "@" = {
+    "ericmilan.dev" = {
       Type = "TXT",
       TTL  = 3600,
       TXTRecords = [
