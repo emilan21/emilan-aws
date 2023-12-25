@@ -46,9 +46,6 @@ resource "aws_lambda_permission" "delete_counts_apigw_lambda" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.delete_visit_count_lambda.function_name
   principal     = "apigateway.amazonaws.com"
-
-  # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
-  source_arn = "arn:aws:execute-api:${var.region}:${var.accountId}:${aws_api_gateway_rest_api.eric_milan_dev_prod.id}/*/${aws_api_gateway_method.delete_counts_method.http_method}${aws_api_gateway_resource.delete_counts.path}"
 }
 
 data "archive_file" "get_visit_count_lambda" {

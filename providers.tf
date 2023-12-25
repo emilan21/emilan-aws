@@ -15,7 +15,7 @@ terraform {
 provider "aws" {
   alias   = "prod"
   region  = "us-east-1"
-  profile = "Production-Account.Developer"
+  profile = "Developer-518835924951"
 }
 
 # Configure the archive Provider
