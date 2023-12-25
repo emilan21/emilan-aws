@@ -151,13 +151,6 @@ resource "aws_api_gateway_stage" "eric_milan_dev_prod" {
   stage_name    = var.stage_name
 }
 
-resource "aws_cloudwatch_log_group" "stage_eric_milan_dev_prod" {
-  provider          = aws.prod
-  name              = "API-Gateway-Execution-Logs_${aws_api_gateway_rest_api.eric_milan_dev_prod.id}/${var.stage_name}"
-  retention_in_days = 7
-  # ... potentially other configuration ...
-}
-
 output "eric_milan_dev_prod_api_url" {
   description = "API URL"
   value       = aws_api_gateway_stage.eric_milan_dev_prod.invoke_url
