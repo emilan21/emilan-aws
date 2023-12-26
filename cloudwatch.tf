@@ -110,7 +110,7 @@ resource "aws_cloudwatch_metric_alarm" "api_gateway_count" {
   namespace                 = "AWS/ApiGateway"
   period                    = 60
   statistic                 = "Sum"
-  threshold                 = 20
+  threshold                 = 100
   alarm_description         = "This metric monitors api gateway count metric"
   insufficient_data_actions = []
   alarm_actions             = [aws_sns_topic.cloudwatch_metric_alarms.arn]
