@@ -57,7 +57,6 @@ resource "aws_cloudwatch_metric_alarm" "lambda_error" {
   alarm_description         = "This metric monitors lambda function errors"
   insufficient_data_actions = []
   alarm_actions             = [aws_sns_topic.cloudwatch_metric_alarms.arn]
-  ok_actions                = [aws_sns_topic.cloudwatch_metric_alarms.arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
@@ -87,7 +86,6 @@ resource "aws_cloudwatch_metric_alarm" "api_gateway_5xxerror" {
   alarm_description         = "This metric monitors api gateway 5XXError metric"
   insufficient_data_actions = []
   alarm_actions             = [aws_sns_topic.cloudwatch_metric_alarms.arn]
-  ok_actions                = [aws_sns_topic.cloudwatch_metric_alarms.arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "api_gateway_4xxerror" {
@@ -102,7 +100,6 @@ resource "aws_cloudwatch_metric_alarm" "api_gateway_4xxerror" {
   alarm_description         = "This metric monitors api gateway 4XXError metric"
   insufficient_data_actions = []
   alarm_actions             = [aws_sns_topic.cloudwatch_metric_alarms.arn]
-  ok_actions                = [aws_sns_topic.cloudwatch_metric_alarms.arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "api_gateway_count" {
@@ -117,5 +114,4 @@ resource "aws_cloudwatch_metric_alarm" "api_gateway_count" {
   alarm_description         = "This metric monitors api gateway count metric"
   insufficient_data_actions = []
   alarm_actions             = [aws_sns_topic.cloudwatch_metric_alarms.arn]
-  ok_actions                = [aws_sns_topic.cloudwatch_metric_alarms.arn]
 }
