@@ -1,35 +1,30 @@
 # API Gateway
 resource "aws_api_gateway_rest_api" "eric_milan_dev_prod" {
-  provider = aws.prod
-  name     = "ericmilandevprod"
+  name = "ericmilandevprod"
   endpoint_configuration {
     types = ["REGIONAL"]
   }
 }
 
 resource "aws_api_gateway_resource" "counts" {
-  provider    = aws.prod
   path_part   = "counts"
   parent_id   = aws_api_gateway_rest_api.eric_milan_dev_prod.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.eric_milan_dev_prod.id
 }
 
 resource "aws_api_gateway_resource" "get_counts" {
-  provider    = aws.prod
   path_part   = "get"
   parent_id   = aws_api_gateway_resource.counts.id
   rest_api_id = aws_api_gateway_rest_api.eric_milan_dev_prod.id
 }
 
 resource "aws_api_gateway_resource" "increment_counts" {
-  provider    = aws.prod
   path_part   = "increment"
   parent_id   = aws_api_gateway_resource.counts.id
   rest_api_id = aws_api_gateway_rest_api.eric_milan_dev_prod.id
 }
 
 resource "aws_api_gateway_method" "get_counts_method" {
-  provider      = aws.prod
   rest_api_id   = aws_api_gateway_rest_api.eric_milan_dev_prod.id
   resource_id   = aws_api_gateway_resource.get_counts.id
   http_method   = "POST"
@@ -37,7 +32,6 @@ resource "aws_api_gateway_method" "get_counts_method" {
 }
 
 resource "aws_api_gateway_method" "increment_counts_method" {
-  provider      = aws.prod
   rest_api_id   = aws_api_gateway_rest_api.eric_milan_dev_prod.id
   resource_id   = aws_api_gateway_resource.increment_counts.id
   http_method   = "POST"
@@ -45,7 +39,6 @@ resource "aws_api_gateway_method" "increment_counts_method" {
 }
 
 resource "aws_api_gateway_integration" "get_counts_integration" {
-  provider                = aws.prod
   rest_api_id             = aws_api_gateway_rest_api.eric_milan_dev_prod.id
   resource_id             = aws_api_gateway_resource.get_counts.id
   http_method             = aws_api_gateway_method.get_counts_method.http_method
@@ -55,7 +48,6 @@ resource "aws_api_gateway_integration" "get_counts_integration" {
 }
 
 resource "aws_api_gateway_integration" "increment_counts_integration" {
-  provider                = aws.prod
   rest_api_id             = aws_api_gateway_rest_api.eric_milan_dev_prod.id
   resource_id             = aws_api_gateway_resource.increment_counts.id
   http_method             = aws_api_gateway_method.increment_counts_method.http_method
@@ -65,7 +57,6 @@ resource "aws_api_gateway_integration" "increment_counts_integration" {
 }
 
 resource "aws_api_gateway_method_response" "get_counts_response_200" {
-  provider    = aws.prod
   rest_api_id = aws_api_gateway_rest_api.eric_milan_dev_prod.id
   resource_id = aws_api_gateway_resource.get_counts.id
   http_method = aws_api_gateway_method.get_counts_method.http_method
@@ -77,7 +68,6 @@ resource "aws_api_gateway_method_response" "get_counts_response_200" {
 }
 
 resource "aws_api_gateway_method_response" "increment_counts_response_200" {
-  provider    = aws.prod
   rest_api_id = aws_api_gateway_rest_api.eric_milan_dev_prod.id
   resource_id = aws_api_gateway_resource.increment_counts.id
   http_method = aws_api_gateway_method.increment_counts_method.http_method
@@ -89,7 +79,6 @@ resource "aws_api_gateway_method_response" "increment_counts_response_200" {
 }
 
 resource "aws_api_gateway_integration_response" "get_counts_integration_response" {
-  provider    = aws.prod
   rest_api_id = aws_api_gateway_rest_api.eric_milan_dev_prod.id
   resource_id = aws_api_gateway_resource.get_counts.id
   http_method = aws_api_gateway_method.get_counts_method.http_method
@@ -100,10 +89,12 @@ resource "aws_api_gateway_integration_response" "get_counts_integration_response
     "application/json" = <<EOF
 EOF
   }
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = "'origin'"
+  }
 }
 
 resource "aws_api_gateway_integration_response" "increment_counts_integration_response" {
-  provider    = aws.prod
   rest_api_id = aws_api_gateway_rest_api.eric_milan_dev_prod.id
   resource_id = aws_api_gateway_resource.increment_counts.id
   http_method = aws_api_gateway_method.increment_counts_method.http_method
@@ -114,10 +105,12 @@ resource "aws_api_gateway_integration_response" "increment_counts_integration_re
     "application/json" = <<EOF
 EOF
   }
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = "'origin'"
+  }
 }
 
 resource "aws_api_gateway_deployment" "eric_milan_dev_prod" {
-  provider    = aws.prod
   rest_api_id = aws_api_gateway_rest_api.eric_milan_dev_prod.id
 
   triggers = {
@@ -144,7 +137,6 @@ resource "aws_api_gateway_deployment" "eric_milan_dev_prod" {
 }
 
 resource "aws_api_gateway_stage" "eric_milan_dev_prod" {
-  provider      = aws.prod
   depends_on    = [aws_cloudwatch_log_group.stage_eric_milan_dev_prod]
   deployment_id = aws_api_gateway_deployment.eric_milan_dev_prod.id
   rest_api_id   = aws_api_gateway_rest_api.eric_milan_dev_prod.id
@@ -154,4 +146,14 @@ resource "aws_api_gateway_stage" "eric_milan_dev_prod" {
 output "eric_milan_dev_prod_api_url" {
   description = "API URL"
   value       = aws_api_gateway_stage.eric_milan_dev_prod.invoke_url
+}
+
+resource "aws_api_gateway_method_settings" "all" {
+  rest_api_id = aws_api_gateway_rest_api.eric_milan_dev_prod.id
+  stage_name  = aws_api_gateway_stage.eric_milan_dev_prod.stage_name
+  method_path = "*/*"
+
+  settings {
+    metrics_enabled = true
+  }
 }

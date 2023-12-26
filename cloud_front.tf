@@ -6,7 +6,6 @@ locals {
 
 # Prod Account
 resource "aws_cloudfront_distribution" "eric_milan_dev_prod" {
-  provider = aws.prod
 
   enabled = true
 

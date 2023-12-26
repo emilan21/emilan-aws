@@ -27,7 +27,6 @@ locals {
 }
 
 resource "aws_route53_zone" "eric_milan_dev_prod" {
-  provider      = aws.prod
   name          = "ericmilan.dev"
   force_destroy = true
 }
@@ -38,10 +37,9 @@ output "nameservers" {
 }
 
 resource "aws_route53_record" "eric_milan_dev_prod" {
-  provider = aws.prod
-  zone_id  = aws_route53_zone.eric_milan_dev_prod.zone_id
-  name     = "ericmilan.dev"
-  type     = "A"
+  zone_id = aws_route53_zone.eric_milan_dev_prod.zone_id
+  name    = "ericmilan.dev"
+  type    = "A"
 
   alias {
     name                   = aws_cloudfront_distribution.eric_milan_dev_prod.domain_name
@@ -51,7 +49,6 @@ resource "aws_route53_record" "eric_milan_dev_prod" {
 }
 
 resource "aws_route53_record" "mx_records" {
-  provider = aws.prod
   for_each = local.MXRecordSets
   zone_id  = aws_route53_zone.eric_milan_dev_prod.id
   name     = each.key
@@ -61,7 +58,6 @@ resource "aws_route53_record" "mx_records" {
 }
 
 resource "aws_route53_record" "txt_records" {
-  provider = aws.prod
   for_each = local.TXTRecordSets
   zone_id  = aws_route53_zone.eric_milan_dev_prod.id
   name     = each.key

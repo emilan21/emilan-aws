@@ -1,5 +1,4 @@
 data "aws_iam_policy_document" "assume_role" {
-  provider = aws.prod
   statement {
     effect = "Allow"
 
@@ -13,13 +12,11 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "iam_for_lambda" {
-  provider           = aws.prod
   name               = "iam_for_lambda"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 resource "aws_lambda_permission" "get_counts_apigw_lambda" {
-  provider      = aws.prod
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.get_visit_count_lambda.function_name
@@ -30,7 +27,6 @@ resource "aws_lambda_permission" "get_counts_apigw_lambda" {
 }
 
 resource "aws_lambda_permission" "increment_counts_apigw_lambda" {
-  provider      = aws.prod
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.increment_visit_count_lambda.function_name
@@ -41,7 +37,6 @@ resource "aws_lambda_permission" "increment_counts_apigw_lambda" {
 }
 
 resource "aws_lambda_permission" "delete_counts_apigw_lambda" {
-  provider      = aws.prod
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.delete_visit_count_lambda.function_name
@@ -49,28 +44,24 @@ resource "aws_lambda_permission" "delete_counts_apigw_lambda" {
 }
 
 data "archive_file" "get_visit_count_lambda" {
-  provider    = archive.prod
   type        = "zip"
   source_file = "../emilan-website/backend/get_visit_count.py"
   output_path = "get_visit_count_payload.zip"
 }
 
 data "archive_file" "increment_visit_count_lambda" {
-  provider    = archive.prod
   type        = "zip"
   source_file = "../emilan-website/backend/increment_visit_count.py"
   output_path = "increment_visit_count_payload.zip"
 }
 
 data "archive_file" "delete_visit_count_lambda" {
-  provider    = archive.prod
   type        = "zip"
   source_file = "../emilan-website/backend/delete_visit_count.py"
   output_path = "delete_visit_count_payload.zip"
 }
 
 resource "aws_lambda_function" "get_visit_count_lambda" {
-  provider = aws.prod
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
   filename      = "get_visit_count_payload.zip"
@@ -95,7 +86,6 @@ resource "aws_lambda_function" "get_visit_count_lambda" {
 }
 
 resource "aws_lambda_function" "increment_visit_count_lambda" {
-  provider = aws.prod
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
   filename      = "increment_visit_count_payload.zip"
@@ -120,7 +110,6 @@ resource "aws_lambda_function" "increment_visit_count_lambda" {
 }
 
 resource "aws_lambda_function" "delete_visit_count_lambda" {
-  provider = aws.prod
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
   filename      = "delete_visit_count_payload.zip"
