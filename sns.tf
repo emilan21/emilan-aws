@@ -8,6 +8,12 @@ resource "aws_sns_topic_subscription" "cloudwatch_metric_alarms_email_target" {
   endpoint  = "emilan+cloudwatch-metric-alarms@ericmilan.dev"
 }
 
+resource "aws_sns_topic_subscription" "cloudwatch_metric_alarms_pagerduty_target" {
+  topic_arn = aws_sns_topic.cloudwatch_metric_alarms.arn
+  protocol  = "https"
+  endpoint  = "https://events.pagerduty.com/integration/7da695445fb04d09c07491337b9e94ab/enqueue"
+}
+
 resource "aws_sns_topic_policy" "default" {
   arn    = aws_sns_topic.cloudwatch_metric_alarms.arn
   policy = data.aws_iam_policy_document.sns_topic_policy.json
