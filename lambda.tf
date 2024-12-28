@@ -45,19 +45,19 @@ resource "aws_lambda_permission" "delete_counts_apigw_lambda" {
 
 data "archive_file" "get_visit_count_lambda" {
   type        = "zip"
-  source_file = "../emilan-website/backend/get_visit_count.py"
+  source_file = "../emilan-website-backend/get_visit_count.py"
   output_path = "get_visit_count_payload.zip"
 }
 
 data "archive_file" "increment_visit_count_lambda" {
   type        = "zip"
-  source_file = "../emilan-website/backend/increment_visit_count.py"
+  source_file = "../emilan-website-backend/increment_visit_count.py"
   output_path = "increment_visit_count_payload.zip"
 }
 
 data "archive_file" "delete_visit_count_lambda" {
   type        = "zip"
-  source_file = "../emilan-website/backend/delete_visit_count.py"
+  source_file = "../emilan-website-backend/delete_visit_count.py"
   output_path = "delete_visit_count_payload.zip"
 }
 

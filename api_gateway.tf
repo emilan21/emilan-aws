@@ -79,6 +79,9 @@ resource "aws_api_gateway_method_response" "increment_counts_response_200" {
 }
 
 resource "aws_api_gateway_integration_response" "get_counts_integration_response" {
+  depends_on = [
+    aws_api_gateway_method_response.get_counts_response_200
+  ]
   rest_api_id = aws_api_gateway_rest_api.eric_milan_dev_prod.id
   resource_id = aws_api_gateway_resource.get_counts.id
   http_method = aws_api_gateway_method.get_counts_method.http_method
@@ -89,12 +92,12 @@ resource "aws_api_gateway_integration_response" "get_counts_integration_response
     "application/json" = <<EOF
 EOF
   }
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = "'origin'"
-  }
 }
 
 resource "aws_api_gateway_integration_response" "increment_counts_integration_response" {
+  depends_on = [
+    aws_api_gateway_method_response.increment_counts_response_200
+  ]
   rest_api_id = aws_api_gateway_rest_api.eric_milan_dev_prod.id
   resource_id = aws_api_gateway_resource.increment_counts.id
   http_method = aws_api_gateway_method.increment_counts_method.http_method
@@ -104,9 +107,6 @@ resource "aws_api_gateway_integration_response" "increment_counts_integration_re
   response_templates = {
     "application/json" = <<EOF
 EOF
-  }
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = "'origin'"
   }
 }
 
